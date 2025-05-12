@@ -1,0 +1,17 @@
+## 1. Introduction
+
+### Context & Motivation
+
+Event shocks - sudden deviations from system equilibria - drive critical transitions in socioeconomic and ecological systems. Recent crises (COVID-19 pandemic, global financial crisis, extreme weather events) underscore the need for systematic shock analysis. Current literature remains siloed by domain, lacking unified frameworks for cross-category comparison.
+
+As shown by prior work on shock dynamics [@Smith2020], the event…
+
+### Objectives
+
+1. Characterize global shock trends across categories
+
+2. Evaluate modeling approaches for shock prediction
+
+3. Identify regional vulnerability patterns
+
+4. Propose standardized shock taxonomy
