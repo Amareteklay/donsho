@@ -1,5 +1,21 @@
 ---
-title: "Test Report"
+title: "A Review of Event Shocks and Their Dynamics"
+author:
+  - name: Your Name
+    affiliation: Your Institution
+date: "`r Sys.Date()`"
+format:
+  html:
+    toc: true
+    code-fold: true
+  pdf:
+    toc: true
+    number-sections: true
+  docx: default
+  epub:
+    toc: true
+bibliography: references.bib
+csl: apa.csl
 ---
 
 ```{python}
@@ -12,3 +28,18 @@ print(f"Streamlit version: {streamlit.__version__}")
 ```
 
 # Why is this not working?
+
+## 1. Explore Raw Counts
+
+Below we load and clean the shocks‐counts data and display the first few rows.
+
+```{python}
+#| label: load-data
+from src.data_loader import load_and_clean_counts
+
+# Load & clean
+df = load_and_clean_counts("../data/01_raw/Shocks_Database_counts.csv")
+df.head()
+```
+
+As shown by prior work on shock dynamics [@Smith2020], the event…
