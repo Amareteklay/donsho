@@ -1,0 +1,7 @@
+.venv/
+.vscode/
+__pycache__/
+*.pyc
+report/_site/
+data/02_interim/
+/.quarto/

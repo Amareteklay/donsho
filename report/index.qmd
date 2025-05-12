@@ -1,0 +1,14 @@
+---
+title: "Test Report"
+---
+
+```{python}
+#| echo: false
+
+import streamlit  # Just testing if imports work
+
+print("Hello from Quarto!")
+print(f"Streamlit version: {streamlit.__version__}")
+```
+
+# Why is this not working?

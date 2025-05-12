@@ -1,0 +1,6 @@
+README.md
+setup.py
+src/donsho.egg-info/PKG-INFO
+src/donsho.egg-info/SOURCES.txt
+src/donsho.egg-info/dependency_links.txt
+src/donsho.egg-info/top_level.txt

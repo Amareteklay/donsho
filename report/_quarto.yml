@@ -1,0 +1,13 @@
+
+project:
+  type: website
+
+execute:
+  kernel: python3
+  echo: false
+  cache: false
+
+format:
+  html:
+    theme: cosmo
+    toc: true
