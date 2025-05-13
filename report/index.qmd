@@ -7,12 +7,6 @@ format:
   html:
     toc: true
     code-fold: true
-  pdf:
-    toc: true
-    number-sections: true
-  docx: default
-  epub:
-    toc: true
 bibliography: references.bib
 csl: apa.csl
 ---
@@ -31,14 +25,6 @@ This review examines the dynamics of event shocks across economic, epidemiologic
 
 Our analysis uses the Global Shock Database containing 15,000+ events from 1990-2023. Key variables include:
 
-```{python}
-#| label: load-data
-from src.data_loader import load_and_clean_counts
-
-# Load & clean
-df = load_and_clean_counts("../data/01_raw/Shocks_Database_counts.csv")
-df.head()
-```
 
 - Shock category (economic, health, environmental)
 
@@ -51,7 +37,12 @@ df.head()
 
 ### 2.2. Cleaning & Harmonization
 
-Preprocessing steps included:
+
+
+{{< include 2-data-prep.qmd  >}}
+
+
+### Preprocessing steps included:
 
 1. Temporal alignment to monthly frequency
 
@@ -75,6 +66,8 @@ Subsetting by continent shows North America experiences more frequent economic s
 ### 4.1. Binary Probit/Logit Models
 
 Logistic regression models shock occurrence using 1-year lagged predictors:
+
+{{< include 4-modelling.qmd >}}
 
 ### 4.2. Poisson/Count Models
 

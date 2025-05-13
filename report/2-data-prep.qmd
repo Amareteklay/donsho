@@ -1,0 +1,30 @@
+
+## Data Prep
+
+```{python}
+from src.data_loader import load_raw_csv
+from src.prep        import preprocess_counts
+from src.diagnostics import show_head, show_info
+raw_df = load_raw_csv()
+df     = preprocess_counts(raw_df)
+
+show_head(df)
+
+```
+
+
+## Show info
+```{python}
+from src.data_loader import load_raw_csv
+from src.prep        import preprocess_counts
+from src.diagnostics import show_head, show_info
+raw_df = load_raw_csv()
+df     = preprocess_counts(raw_df)
+# show the column info table
+show_info(df)
+
+```
+
+### Describe data
+
+### Next step?

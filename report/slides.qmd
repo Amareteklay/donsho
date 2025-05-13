@@ -1,0 +1,33 @@
+---
+title: "The Effect of Shocks"
+author: "Your Name"
+format: 
+  revealjs:
+    theme: simple
+    transition: fade
+    slide-number: true
+    incremental: true
+bibliography: references.bib
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+## Background
+
+- Shocks like war, disasters, and economic crises
+- Can trigger or worsen disease outbreaks
+
+## Data
+
+```{python}
+from src.data_loader import load_raw_csv
+from src.prep        import preprocess_counts
+from src.diagnostics import show_head, show_info
+raw_df = load_raw_csv()
+df     = preprocess_counts(raw_df)
+
+show_head(df)
+
+```

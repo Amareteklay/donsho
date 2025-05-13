@@ -1,8 +1,19 @@
 import streamlit as st
-from src.data_loader import load_and_clean_counts
-#from src.viz import heatmap_counts
+from src.data_loader   import load_raw_csv
+from src.diagnostics   import show_head, show_info
 
-st.title("📊 Explore raw counts")
-df = load_and_clean_counts()
-st.dataframe(df.head())
-#st.altair_chart(heatmap_counts(df), use_container_width=True)
+st.set_page_config(
+    page_title="Explroe Data",
+    page_icon="🔧",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+st.title("📊 Explore Data")
+
+# ── 1) Load raw data (uncleaned) ────────────────────────────────────────
+raw_df = load_raw_csv()                           # pure I/O
+st.subheader("Raw Data Preview")
+st.dataframe(show_head(raw_df))
+
+st.subheader("Raw Data Structure")
+st.dataframe(show_info(raw_df))
