@@ -11,3 +11,4 @@ format:
   html:
     theme: cosmo
     toc: true
+    include-in-header: includes.tex

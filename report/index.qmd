@@ -3,13 +3,26 @@ title: "EPPs and Shocks"
 author:
   - name: Amare
     affiliation: KVA
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 format:
-  html:
-    toc: true
-    code-fold: true
+  pdf:
+    documentclass: article
+    toc: false
+    number-sections: true
+    header-includes: |
+      \usepackage{booktabs}
+      \usepackage{siunitx}
+      \usepackage[labelfont=bf]{caption}
+      \usepackage{threeparttable}
+      \sisetup{
+        group-digits = false,
+        table-space-text-pre = {(},
+        table-align-text-pre = false
+      }
 bibliography: references.bib
 csl: apa.csl
 ---
+
 
 ## Abstract
 
@@ -67,7 +80,7 @@ Subsetting by continent shows North America experiences more frequent economic s
 
 Logistic regression models shock occurrence using 1-year lagged predictors:
 
-{{< include 4-modelling.qmd >}}
+{{< include 4-modeling.qmd >}}
 
 ### 4.2. Poisson/Count Models
 
