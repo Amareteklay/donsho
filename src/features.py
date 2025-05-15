@@ -118,13 +118,60 @@ def build_event_panel(
 
     # 6 ▸ outcome counts attached only to the *event* year (Year_rel == 0)
     dv_rename = dv.rename(columns={"Year": "DON_year", "n_disease": "Infectious_disease"})
-    panel = panel.merge(dv_rename, on=["Country_name", "Continent", "DON_year"], how="left")
-    panel["Infectious_disease"] = panel.apply(
-        lambda r: r["Infectious_disease"] if r["Year_rel"] == 0 else 0,
-        axis=1,
-    ).fillna(0).astype(int)
+    
+    panel = panel.merge(
+    dv.rename(columns={"Year": "Year", "n_disease": "Infectious_disease"}),
+    on=["Country_name", "Continent", "Year"],
+    how="left"
+)
+    panel["Infectious_disease"] = panel["Infectious_disease"].fillna(0).astype(int)
+
 
     # 7 ▸ tidy column order
     meta_cols = ["Country_name", "Continent", "DON_year", "Year", "Year_rel"]
     shock_cols = sorted(c for c in panel.columns if c not in meta_cols + ["Infectious_disease"])
     return panel[meta_cols + shock_cols + ["Infectious_disease"]]
+
+
+def build_lagged_shock_features(panel_df, shock: str, max_lag=5):
+    df = panel_df.copy()
+    df = df[df["Year_rel"].between(-max_lag, max_lag)]
+    df = df[["Country_name", "Continent", "DON_year", "Year_rel", shock, "Infectious_disease"]].copy()
+
+    # Rename Year_rel for safe variable names
+    def safe_lag(x):
+        return f"{shock}_lag_m{abs(x)}" if x < 0 else (f"{shock}_lag_p{x}" if x > 0 else f"{shock}_lag_0")
+
+    df["lag_col"] = df["Year_rel"].apply(safe_lag)
+    df = df.pivot_table(index=["Country_name", "Continent", "DON_year"], 
+                        columns="lag_col", values=shock).reset_index()
+
+    # Add outcome at Year_rel = 0
+    outcome = panel_df.query("Year_rel == 0")[["Country_name", "Continent", "DON_year", "Infectious_disease"]]
+    result = pd.merge(outcome, df, on=["Country_name", "Continent", "DON_year"])
+    result["Infectious_disease"] = (result["Infectious_disease"] > 0).astype(int)
+
+    return result
+
+
+def build_balanced_lagged_df(panel_df, shock: str, max_lag=5):
+    df = panel_df.copy()
+    df = df[df["Year_rel"].between(-max_lag, max_lag)]
+    
+    # Rename lags safely
+    def safe_lag(x):
+        return f"{shock}_lag_m{abs(x)}" if x < 0 else (f"{shock}_lag_p{x}" if x > 0 else f"{shock}_lag_0")
+
+    df["lag_col"] = df["Year_rel"].apply(safe_lag)
+
+    # Pivot into wide format with lagged shock values
+    df_wide = df.pivot_table(index=["Country_name", "Continent", "DON_year"], 
+                              columns="lag_col", values=shock).reset_index()
+
+    # Grab the outcome for every DON_year (can be 1 or 0)
+    outcome_df = df[df["Year_rel"] == 0][["Country_name", "Continent", "DON_year", "Infectious_disease"]].drop_duplicates()
+    outcome_df["Infectious_disease"] = (outcome_df["Infectious_disease"] > 0).astype(int)
+
+    result = pd.merge(outcome_df, df_wide, on=["Country_name", "Continent", "DON_year"])
+
+    return result

@@ -1,63 +1,60 @@
-# 5_Results.py
-import pickle
-from pathlib import Path
+# pages/5_Results.py
 
-import pandas as pd
 import streamlit as st
 
-from src import data_loader, prep, features, viz
-from src.config import SAVED_MODELS_DIR   # defined in the modelling page :contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}
+# core data + viz API
+from src.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients
+# baseline spec & fitters
+from src.models import build_spec, fit_poisson, fit_negbin
 
 st.set_page_config(page_title="Model results", layout="wide")
 st.title("📊 Results")
 
-# ── 1) pick a saved model ──────────────────────────────────────────────
-model_files = sorted(SAVED_MODELS_DIR.glob("*.pkl"))
-mdl_path    = st.sidebar.selectbox("Choose a saved model", model_files)
+# ── 1) Load and prepare the default panel ────────────────────────────────
+df = load_data()
 
-if not mdl_path:
-    st.info("👈 Select a model file in the sidebar to continue.")
-    st.stop()
+# ── 2) Fit recommended baselines ────────────────────────────────────────
+# Poisson FE + linear year‐trend
+df_spec, y_base, X_base, formula_base = build_spec(
+    df,
+    outcome_mode="count",
+    pred_mode="count",
+    add_year_trend=True,
+    fe={"Continent": True},
+)
+poisson_res = fit_poisson(df_spec, formula_base)
+# Negative‐Binomial FE + linear year‐trend (for overdispersion check)
+negbin_res  = fit_negbin(df_spec, formula_base)
 
-with open(mdl_path, "rb") as fh:
-    # the custom classes (PoissonGLMM, LogisticGLM, …) are pickle-able
-    model = pickle.load(fh)
+st.subheader("📌 Baseline: Poisson FE + Year Trend")
+st.write(poisson_res.summary())
 
-st.success(f"Loaded **{mdl_path.name}**")
+st.subheader("📌 Baseline: Negative-Binomial FE + Year Trend")
+st.write(negbin_res.summary())
 
-# ── 2) choose / build an evaluation panel ──────────────────────────────
-interims = sorted(Path("data/02_interim").glob("panel_*.parquet"))
-panel_fn = st.sidebar.selectbox("Evaluation dataset", interims)
+# ── 3) Blueprint Figures ────────────────────────────────────────────────
+st.header("📈 Figures")
 
-# fall back to raw-counts workflow if no interim chosen
-if panel_fn:
-    test = data_loader.load_interim(panel_fn.name)
-else:
-    raw  = prep.add_continent(prep.clean_counts(data_loader.load_raw_counts()))
-    test = features.build_panel(raw)
+for name, plot_fn in FIGURES.items():
+    st.subheader(name)
+    try:
+        chart = plot_fn(df, model=poisson_res)
+    except TypeError:
+        chart = plot_fn(df)
+    if hasattr(chart, "to_dict"):  # Altair chart
+        st.altair_chart(chart, use_container_width=True)
+    else:                           # Matplotlib Figure
+        st.pyplot(chart, use_container_width=True)
 
-# ── 3) generate predictions ────────────────────────────────────────────
-# If the model was fitted on a subset of predictors, keep only those cols
-predictors = [c for c in model.exog_names if c != "Intercept"]
-missing    = set(predictors) - set(test.columns)
-if missing:
-    st.warning(f"Test set is missing predictors: {missing}. "
-               "Those columns will be filled with zero.")
-    for col in missing:
-        test[col] = 0
+st.subheader("📌 Lagged coefficients")
+st.pyplot(plot_lagged_coefficients(df, max_lag=5))
 
-y_true = test["Infectious_disease"]
-y_pred = model.predict(test[predictors])
-
-# attach predictions so viz.plot_residuals can re-use them if desired
-test["pred"] = y_pred
-
-# ── 4) plots ───────────────────────────────────────────────────────────
-st.subheader("Model coefficients")
-viz.plot_coefficients(model)                         # uses params & bse
-
-st.subheader("Residual diagnostics")
-viz.plot_residuals(model,
-                   test[predictors],                # X matrix
-                   y_true,                         # y_true
-                   y_pred)                         # (pre-computed)
+# ── 4) Blueprint Tables ────────────────────────────────────────────────
+st.header("📋 Tables")
+for name, table_fn in TABLES.items():
+    st.subheader(name)
+    try:
+        html = table_fn(df, model=poisson_res)
+    except TypeError:
+        html = table_fn(df)
+    st.markdown(html, unsafe_allow_html=True)

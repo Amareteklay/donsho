@@ -232,3 +232,31 @@ def filter_model_data(
     zero_var = [col for col in predictors if df[col].std() == 0]
     keep = [col for col in predictors if col not in zero_var]
     return df.drop(columns=zero_var, errors="ignore"), keep
+
+def fit_lag_model(panel_df):
+    from src.models import fit_logit
+    from src.utils import make_formula
+    import pandas as pd
+
+    df = panel_df.copy()
+    df["Infectious_disease"] = (df["Infectious_disease"] > 0).astype(int)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna()
+
+    df["Year_rel"] = df["Year_rel"].astype(int)
+
+    formula = "Infectious_disease ~ C(Year_rel) + C(Continent)"
+    model = fit_logit(df, formula=formula, cluster="Country_name")
+
+    return model
+
+
+def fit_logit_lagged_shock(df: pd.DataFrame, shock: str):
+    import statsmodels.formula.api as smf
+    df["Infectious_disease"] = (df["Infectious_disease"] > 0).astype(int)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna()
+    lag_vars = [col for col in df.columns if col.startswith(f"{shock}_lag_")]
+    formula = "Infectious_disease ~ " + " + ".join(lag_vars)
+
+    model = smf.logit(formula=formula, data=df).fit()
+    return model, lag_vars
+
