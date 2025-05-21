@@ -1,6 +1,6 @@
 import streamlit as st
-from src.data_loader   import load_raw_csv
-from src.prep          import preprocess_counts
+from z_legacy.data_loader   import load_raw_csv
+from z_legacy.prep          import preprocess_counts
 from src.diagnostics   import show_head, show_info, show_description
 
 st.set_page_config(

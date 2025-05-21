@@ -3,12 +3,12 @@ title: "EPPs and Shocks"
 author:
   - name: Amare
     affiliation: KVA
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: today
 format:
   pdf:
     documentclass: article
     toc: false
-    number-sections: true
+    number-sections: false
     header-includes: |
       \usepackage{booktabs}
       \usepackage{siunitx}
@@ -19,6 +19,8 @@ format:
         table-space-text-pre = {(},
         table-align-text-pre = false
       }
+  docx:
+    toc: true
 bibliography: references.bib
 csl: apa.csl
 ---
@@ -26,7 +28,7 @@ csl: apa.csl
 
 ## Abstract
 
-This review examines the dynamics of event shocks across economic, epidemiological, and environmental domains. We synthesize evidence from global datasets spanning 1990-2023, analyzing temporal patterns, regional variations, and modeling approaches. Key findings reveal increasing climate-related shocks and persistent economic shock clustering. Our methodological comparison demonstrates context-dependent performance between logistic and count models. The review highlights critical data harmonization challenges and proposes a framework for cross-domain shock analysis.
+
 
 
 {{< include 1-introduction.qmd >}}
@@ -36,19 +38,26 @@ This review examines the dynamics of event shocks across economic, epidemiologic
 
 ### 2.1. Raw Data
 
-Our analysis uses the Global Shock Database containing 15,000+ events from 1990-2023. Key variables include:
+We use two datasets:
+
+- Shocks count database
+- Disease outbreak news (DON) database
+
+Each database consists of events by year and country
+
+Features:
+
+- Shock categories
+- Shock types
+- Infectious disease
+- Total cases
+- Total deaths
+- Country
+- Continent
+- Year
 
 
-- Shock category (economic, health, environmental)
-
-- Geographic coordinates
-
-- Magnitude metrics
-
-- Temporal resolution (daily/monthly)
-
-
-### 2.2. Cleaning & Harmonization
+### 2.2. Data Cleaning
 
 
 
@@ -57,23 +66,17 @@ Our analysis uses the Global Shock Database containing 15,000+ events from 1990-
 
 ### Preprocessing steps included:
 
-1. Temporal alignment to monthly frequency
-
-2. Continent-level geographic aggregation
-
-3. Normalization by population metrics
-
-4. Exclusion of ambiguous events (<5 sources validation) 
+ 
 
 
 ## 3. Exploratory Analysis
 ### 3.1. Global Trends
 
-Figure 1 shows normalized shock frequency by category, revealing increasing environmental shocks post-2010 and persistent economic volatility.
+
 
 ### 3.2. Regional Patterns
 
-Subsetting by continent shows North America experiences more frequent economic shocks, while Asia shows higher environmental shock prevalence (see Appendix A).
+{{< include 3-exploratory.qmd >}}
 
 ## 4. Modelling Approaches
 ### 4.1. Binary Probit/Logit Models
@@ -88,28 +91,12 @@ Negative binomial regression addresses overdispersion in shock counts:
 
 
 ## 5. Discussion
-Key findings:
 
-- Logistic models outperform for rare events (AUC=0.82)
-
-- Poisson variants better capture shock intensity
-
-- Regional heterogeneity necessitates hierarchical modeling
-
-- Limitations include reporting bias in historical data and censored magnitude estimates.
 
 ## 6. Conclusion
 
-- Developed cross-domain shock classification framework
 
-- Demonstrated value of hybrid modeling approaches
 
-- Urgent need for standardized shock monitoring protocols
+  
 
-Open questions:
-
-- Shock interaction effects
-
-- Non-linear system responses
-
-- Early warning signal detection   
+## References

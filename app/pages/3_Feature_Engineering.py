@@ -1,7 +1,7 @@
 import streamlit as st
-from src.data_loader   import load_raw_csv
-from src.prep        import preprocess_counts
-from src.features    import pivot_categories, add_lags, build_panel
+from z_legacy.data_loader   import load_raw_csv
+from z_legacy.prep        import preprocess_counts
+from feature_engineering    import pivot_categories, add_lags, build_panel
 from src.diagnostics import show_head
 from src.config import MAX_LAG
 

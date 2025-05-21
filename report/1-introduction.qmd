@@ -1,17 +1,15 @@
 ## 1. Introduction
 
-### Context & Motivation
+### 1.1. Context & Motivation
 
-Event shocks - sudden deviations from system equilibria - drive critical transitions in socioeconomic and ecological systems. Recent crises (COVID-19 pandemic, global financial crisis, extreme weather events) underscore the need for systematic shock analysis. Current literature remains siloed by domain, lacking unified frameworks for cross-category comparison.
+- Dynamics of polycrisis [@delannoy2024dynamics]
 
-As shown by prior work on shock dynamics [@Smith2020], the event…
+- Objective: to investigate which shocks cause and are caused by EPP outbreaks, especifically outbreaks of human pathogens.
 
-### Objectives
+### 1.2. Research questions
 
-1. Characterize global shock trends across categories
+- Does disease outbreak precede or follow other shocks?
 
-2. Evaluate modeling approaches for shock prediction
+- How persistent are the lagged effects of shocks on disease outbreak?
 
-3. Identify regional vulnerability patterns
-
-4. Propose standardized shock taxonomy
+- How do these dynamics differ across spatial scales?

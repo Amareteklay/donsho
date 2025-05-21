@@ -5,9 +5,9 @@
 import streamlit as st
 import pandas as pd
 
-from src.data_loader   import load_raw_csv
-from src.prep          import preprocess_counts
-from src.features      import build_panel, add_lags
+from z_legacy.data_loader   import load_raw_csv
+from z_legacy.prep          import preprocess_counts
+from feature_engineering      import build_panel, add_lags
 from src.config        import MAX_LAG as DEFAULT_MAX_LAG
 
 # helpers in utils.py
@@ -16,7 +16,7 @@ from src.utils         import (
 )
 
 # wrappers in models.py
-from src.models        import (
+from model_selection        import (
     fit_poisson, fit_negbin, fit_logit,
     fit_panel_re, fit_mixed_effects,
     evaluate_model, train_test_split_ts, filter_model_data

@@ -1,0 +1,80 @@
+
+```{python}
+from src.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients, plot_trend_panel
+from src.models import build_spec, fit_poisson, fit_negbin
+import inspect
+import matplotlib.pyplot as plt
+import altair as alt
+from IPython.display import display
+import warnings
+_ = alt.data_transformers.disable_max_rows()
+
+```
+
+```{python}
+# Load data
+df = load_data()
+
+# Build specification
+df_spec, y_base, X_base, formula_base = build_spec(
+    df,
+    outcome_mode="count",
+    pred_mode="count",
+    add_year_trend=True,
+    fe={"Continent": True},
+)
+poisson_res = fit_poisson(df_spec, formula_base)
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", message="Negative binomial dispersion parameter alpha not set")
+    negbin_res = fit_negbin(df_spec, formula_base)
+```
+
+## Trend
+```{python}
+chart = plot_trend_panel(df)
+```
+
+# Baseline: Poisson FE + Year Trend
+```{python}
+display(poisson_res.summary())
+```
+
+
+# Baseline: Negative-Binomial FE + Year Trend
+
+```{python}
+display(negbin_res.summary())
+```
+
+# Figures
+
+```{python}
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", message="Negative binomial dispersion parameter alpha not set")
+    for name, plot_fn in FIGURES.items():
+        kwargs = {'df': df}
+        if 'model' in inspect.signature(plot_fn).parameters:
+            kwargs['model'] = poisson_res
+        chart = plot_fn(**kwargs)
+    
+```
+
+# Lagged coefficients
+
+```{python}
+chart = plot_lagged_coefficients(df, max_lag=5)
+
+```
+
+# Tables
+
+```{python}
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", message="Negative binomial dispersion parameter alpha not set")
+    for name, table_fn in TABLES.items():
+        kwargs = {'df': df}
+        if 'model' in inspect.signature(table_fn).parameters:
+            kwargs['model'] = poisson_res
+        table = table_fn(**kwargs)
+        display(table)
+```

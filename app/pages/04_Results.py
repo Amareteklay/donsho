@@ -3,9 +3,9 @@
 import streamlit as st
 
 # core data + viz API
-from src.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients
+from src.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients, plot_trend_panel, plot_baseline_forest
 # baseline spec & fitters
-from src.models import build_spec, fit_poisson, fit_negbin
+from model_selection import build_spec, fit_poisson, fit_negbin
 
 st.set_page_config(page_title="Model results", layout="wide")
 st.title("📊 Results")
@@ -35,21 +35,24 @@ st.write(negbin_res.summary())
 # ── 3) Blueprint Figures ────────────────────────────────────────────────
 st.header("📈 Figures")
 
-for name, plot_fn in FIGURES.items():
-    st.subheader(name)
-    try:
-        chart = plot_fn(df, model=poisson_res)
-    except TypeError:
-        chart = plot_fn(df)
-    if hasattr(chart, "to_dict"):  # Altair chart
-        st.altair_chart(chart, use_container_width=True)
-    else:                           # Matplotlib Figure
-        st.pyplot(chart, use_container_width=True)
+# Section: Trend Plot
+st.subheader("Trend plot")
+trend_chart = plot_trend_panel(df)
+st.altair_chart(trend_chart, use_container_width=True)
+
+# Section: Baseline Forest Plot
+st.subheader("Baseline forest plot")
+baseline_chart = plot_baseline_forest(df)
+
+if hasattr(baseline_chart, "to_dict"):
+    st.altair_chart(baseline_chart, use_container_width=True)
+else:
+    st.pyplot(baseline_chart, use_container_width=True)
+
 
 st.subheader("📌 Lagged coefficients")
 st.pyplot(plot_lagged_coefficients(df, max_lag=5))
 
-# ── 4) Blueprint Tables ────────────────────────────────────────────────
 st.header("📋 Tables")
 for name, table_fn in TABLES.items():
     st.subheader(name)

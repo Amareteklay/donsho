@@ -234,7 +234,7 @@ def filter_model_data(
     return df.drop(columns=zero_var, errors="ignore"), keep
 
 def fit_lag_model(panel_df):
-    from src.models import fit_logit
+    from model_selection import fit_logit
     from src.utils import make_formula
     import pandas as pd
 

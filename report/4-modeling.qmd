@@ -208,12 +208,17 @@ def clean_variable_names(name):
     return name.title() + " "  # Space for line breaks
 ```
 
-\sisetup{table-number-alignment = center, group-digits = false}
+## Regression Results
+
+\sisetup{
+  table-number-alignment = center,
+  group-digits = false
+}
 
 \begin{tabular}{l
                 S[table-format=-1.3]
-                S[table-format=(1.3)]
-                S[table-format=<1.3]}
+                S[parse-numbers=false]
+                S[parse-numbers=false]}
   \toprule
   & \multicolumn{3}{c}{Coefficient} \\ \cmidrule(lr){2-4}
   Variable & {Estimate} & {(SE)} & {p-value} \\ \midrule

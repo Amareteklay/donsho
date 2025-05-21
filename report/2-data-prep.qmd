@@ -1,30 +1,70 @@
 
-## Data Prep
-
 ```{python}
+import matplotlib.pyplot as plt
+import seaborn as sns
+from IPython.display import display
 from src.data_loader import load_raw_csv
 from src.prep        import preprocess_counts
 from src.diagnostics import show_head, show_info
 raw_df = load_raw_csv()
 df     = preprocess_counts(raw_df)
 
-show_head(df)
+#show_head(df)
 
 ```
 
 
 ## Show info
 ```{python}
-from src.data_loader import load_raw_csv
-from src.prep        import preprocess_counts
-from src.diagnostics import show_head, show_info
+#from src.data_loader import load_raw_csv
+#from src.prep        import preprocess_counts
+#from src.diagnostics import show_head, show_info
 raw_df = load_raw_csv()
 df     = preprocess_counts(raw_df)
-# show the column info table
-show_info(df)
+
+#show_info(df)
 
 ```
 
 ### Describe data
 
-### Next step?
+```{python}
+
+#df.describe()
+```
+
+
+```{python}
+
+def _plot_series(series, series_name, series_index=0):
+    palette = list(sns.palettes.mpl_palette('Dark2'))
+    counted = (series['Year']
+               .value_counts()
+               .reset_index(name='counts')
+               .rename({'index': 'Year'}, axis=1)
+               .sort_values('Year', ascending=True))
+    xs = counted['Year']
+    ys = counted['counts']
+    plt.plot(xs, ys,
+             label=series_name,
+             color=palette[series_index % len(palette)],
+             marker='o',  # Add markers for clarity
+             linewidth=2)
+
+# Plot config
+fig, ax = plt.subplots(figsize=(10, 5.2), layout='constrained')
+df_sorted = df.sort_values('Year', ascending=True)
+
+for i, (series_name, series) in enumerate(df_sorted.groupby('Continent')):
+    _plot_series(series, series_name, i)
+
+# Style
+fig.legend(title='Continent', bbox_to_anchor=(1.05, 1), loc='upper left')
+sns.despine(fig=fig, ax=ax)
+plt.grid(True, linestyle='--', alpha=0.5)
+plt.title('Shocks per Year by Continent')
+plt.xlabel('Year')
+_ = plt.ylabel('Shock count')
+
+
+```
