@@ -5,3 +5,5 @@ __pycache__/
 report/_site/
 data/02_interim/
 /.quarto/
+/z_legacy/
+

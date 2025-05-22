@@ -3,7 +3,7 @@ import streamlit as st
 import pandas as pd
 from feature_engineering import build_event_panel, build_lagged_shock_features
 from model_selection import fit_lag_model, fit_logit_lagged_shock
-from src.viz import plot_lag_irrs, plot_lag_effects_logit
+from z_legacy.viz import plot_lag_irrs, plot_lag_effects_logit
 
 st.title("Temporal Dynamics: Shock Effects Relative to Outbreaks")
 

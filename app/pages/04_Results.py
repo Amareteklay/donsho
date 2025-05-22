@@ -3,7 +3,7 @@
 import streamlit as st
 
 # core data + viz API
-from src.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients, plot_trend_panel, plot_baseline_forest
+from z_legacy.viz    import load_data, FIGURES, TABLES, plot_lagged_coefficients, plot_trend_panel, plot_baseline_forest
 # baseline spec & fitters
 from model_selection import build_spec, fit_poisson, fit_negbin
 
